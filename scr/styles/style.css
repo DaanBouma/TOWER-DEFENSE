@@ -1,17 +1,28 @@
 body, html {
-    margin: 0;
     padding: 0;
     background-color: rgb(26, 26, 26);
-    overflow: hidden;
 }
 .tile {
     width: 70px;
     position: absolute;
+    cursor: pointer;
+    pointer-events:fill;
+    z-index: 1;
 }
-#page {
-    /* width: 100vw;
-    height: 100vh;
+.game {
+    width: 910px;
+    height: 700px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#container {
     display: flex;
-    align-items: center;
-    justify-content: center; */
+    
+}
+.bee {
+    width: 35px;
+    position: absolute;
+    z-index: 2;
 }

@@ -1,63 +1,86 @@
+//////////////////////////////////////////////////////////////////////
+//////                 information                              ////// 
+//////////////////////////////////////////////////////////////////////
+
+let selectedMap = 0;
+
 let x = 0;
 let y = 0;
+
+const path = [];
+const enemies = [];
+
+//////////////////////////////////////////////////////////////////////
+//////                 Global                                   ////// 
+//////////////////////////////////////////////////////////////////////
 
 function setPosition(pos, x, y) {
     pos.style.transform = 'translate(' + x + 'px , ' + y + 'px)';
 }
+let oldTile = [];
 
 function addClickEvent(tile) {
-    tile.element.onclick = function () {
-        console.log('Tile clicked! ID:', tile.ID);
-    };
+    if (tile.Type == "grass") {
+        tile.element.onclick = function () {
+            if (oldTile.length > 0) {
+                oldTile[0].element.src = "/scr/assets/tiles/grass_tile_1.png";
+            }
+            oldTile = [tile];
+            console.log('Tile clicked! ID:', tile.ID);
+            tile.element.src = "/scr/assets/tiles/grass2.png";
+        };
+    }
 }
-
-function nextRow(){
-    x = 0;
-    y += 70;
-}
-
-
-let tileID = 0;
-function GRASS_TILE(amount) {
-function createTile(){
-    const container = document.querySelector(".game");
-    const element = document.createElement("img");
-    element.src = "/scr/assets/tiles/grass_tile_1.png";
-    element.className = "tile";
-    container.appendChild(element);
-    let tile = {
-        element,
-        tilex: 0,
-        tiley: 0,
-        ID: 0,
-    };
-    tile.tilex = x;
-    tile.tiley = y;
-    tile.ID = tileID;
-    tileID += 1;
-    setPosition(tile.element, tile.tilex, tile.tiley)
-    x += 70;
-
-    addClickEvent(tile);
-    return tile;
-}
-for (let i = 0; i < amount; i++) {
-    createTile();
-}
-
-}
-function SAND_TILE(amount) {
-    function createTile(){
+//////////////////////////////////////////////////////////////////////
+//////                 Enemy Creating                           ////// 
+//////////////////////////////////////////////////////////////////////
+let EnemyID = 0;
+function createEnemy1(amount){
+    function enemy(){
         const container = document.querySelector(".game");
         const element = document.createElement("img");
-        element.src = "/scr/assets/tiles/sand_tile.png";
+        element.src = "/scr/assets/enemy/bee.png";
+        element.className = "enemy bee";
+        element.draggable = false;
+        container.appendChild(element);
+        let enemy = {
+            movingspeed: 10,
+            element,
+            enemyX: 0,
+            enemyY: 0,
+            ID: 0,
+            Type: "Bee"
+        };
+        EnemyID++
+        enemy.ID = EnemyID;
+        setPosition(enemy.element, 70, 70)
+        return enemy;
+    }
+    for (let i = 0; i < amount; i++) {
+        enemy();
+    }
+}
+createEnemy1(1)
+
+//////////////////////////////////////////////////////////////////////
+//////                 Grass Generation                         ////// 
+//////////////////////////////////////////////////////////////////////
+
+let tileID = 0;
+function grassTile(amount) {
+    function createTile() {
+        const container = document.querySelector(".game");
+        const element = document.createElement("img");
+        element.src = "/scr/assets/tiles/grass_tile_1.png";
         element.className = "tile";
+        element.draggable = false;
         container.appendChild(element);
         let tile = {
             element,
             tilex: 0,
             tiley: 0,
             ID: 0,
+            Type: "grass"
         };
         tile.tilex = x;
         tile.tiley = y;
@@ -73,83 +96,110 @@ function SAND_TILE(amount) {
     }
 
 }
+//////////////////////////////////////////////////////////////////////
+//////                 Path Generation                          ////// 
+//////////////////////////////////////////////////////////////////////
 
+function sandTile(amount) {
+    function createTile() {
+        const container = document.querySelector(".game");
+        const element = document.createElement("img");
+        element.src = "/scr/assets/tiles/sand_tile.png";
+        element.className = "tile";
+        element.draggable = false;
+        container.appendChild(element);
+        let tile = {
+            element,
+            tilex: 0,
+            tiley: 0,
+            ID: 0,
+            centerX: 0,
+            centerY: 0,
+            Type: "sand"
+        };
+        tile.tilex = x;
+        tile.tiley = y;
+        tile.centerX = tile.tilex - 35;
+        tile.centerY = tile.tiley - 35;
+        tile.ID = tileID;
+        tileID += 1;
+        path.push(tile)
+        setPosition(tile.element, tile.tilex, tile.tiley)
+        x += 70;
+        addClickEvent(tile);
+        return tile;
+    }
+    for (let i = 0; i < amount; i++) {
+        createTile();
+    }
 
-function generateMap(){
-
-    GRASS_TILE(1)
-    SAND_TILE(1)
-    GRASS_TILE(11)
-    
-    nextRow()
-    
-    //Row 2
-    GRASS_TILE(1)
-    SAND_TILE(11)
-    GRASS_TILE(1)
-    
-    nextRow()
-    
-    //Row 3
-    GRASS_TILE(11)
-    SAND_TILE(1)
-    GRASS_TILE(1)
-    
-    nextRow()
-    
-    //Row 4
-    GRASS_TILE(1)
-    SAND_TILE(5)
-    GRASS_TILE(5)
-    SAND_TILE(1)
-    GRASS_TILE(1)
-    
-    nextRow()
-    
-    //Row 5
-    GRASS_TILE(1)
-    SAND_TILE(1)
-    GRASS_TILE(3)
-    SAND_TILE(1)
-    GRASS_TILE(5)
-    SAND_TILE(1)
-    GRASS_TILE(1)
-    
-    nextRow()
-    
-    //Row 6
-    GRASS_TILE(1)
-    SAND_TILE(1)
-    GRASS_TILE(3)
-    SAND_TILE(7)
-    GRASS_TILE(1)
-    
-    nextRow()
-    
-    //Row 7
-    GRASS_TILE(1)
-    SAND_TILE(1)
-    GRASS_TILE(11)
-    
-    nextRow()
-    
-    //Row 8
-    GRASS_TILE(1)
-    SAND_TILE(1)
-    GRASS_TILE(11)
-    
-    nextRow()
-    
-    //Row 9
-    GRASS_TILE(1)
-    SAND_TILE(10)
-    GRASS_TILE(2)
-    
-    nextRow()
-    
-    //Row 10
-    GRASS_TILE(10)
-    SAND_TILE(1)
-    GRASS_TILE(2)
 }
-generateMap()
+
+//////////////////////////////////////////////////////////////////////
+//////                 Edit map                                 ////// 
+//////////////////////////////////////////////////////////////////////
+
+function editmap0(){
+    const row1 =  [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3];
+    const row2 =  [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 3];
+    const row3 =  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3];
+    const row4 =  [0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 3];
+    const row5 =  [0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 3];
+    const row6 =  [0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 3];
+    const row7 =  [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3];
+    const row8 =  [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3];
+    const row9 =  [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 3];
+    const row10 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3];
+    const map = [row1, row2, row3, row4, row5, row6, row7, row8, row9, row10];
+    return map;
+}
+function editmap1(){
+    const row1 =  [0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3];
+    const row2 =  [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 3];
+    const row3 =  [0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 3];
+    const row4 =  [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 3];
+    const row5 =  [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 3];
+    const row6 =  [1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 3];
+    const row7 =  [0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 3];
+    const row8 =  [0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 3];
+    const row9 =  [0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 3];
+    const row10 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3];
+    const map = [row1, row2, row3, row4, row5, row6, row7, row8, row9, row10];
+    return map;
+}
+//////////////////////////////////////////////////////////////////////
+//////                 Map Generation                           ////// 
+//////////////////////////////////////////////////////////////////////
+
+function generateTile(mapping) {
+    for (let i = 0; i < mapping.length; i++) {
+        for (let j = 0; j < mapping[i].length; j++) {
+            const mappingID = mapping[i][j];
+            if (mappingID == 3) {
+                x = 0;
+                y += 70;
+            } else if (mappingID == 0) {
+                grassTile(1);
+            } else if (mappingID == 1) {
+                sandTile(1);
+            }
+        }
+    }
+}
+
+function generatePlayfield(mapID) {
+    const maps = ["default", "SandBox"];
+    if (mapID >= 0 && mapID < maps.length) {
+        const selectedMap = maps[mapID];
+        console.log("Selected map is: " + selectedMap);
+        if (selectedMap == "default") {
+            const mapping = editmap0();
+            generateTile(mapping);
+        } else if (selectedMap == "SandBox"){
+            const mapping = editmap1();
+            generateTile(mapping);
+        }
+    }
+}
+
+generatePlayfield(selectedMap);
