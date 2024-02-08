@@ -9,7 +9,6 @@ let y = 0;
 
 const path = [];
 const enemies = [];
-
 //////////////////////////////////////////////////////////////////////
 //////                 Global                                   ////// 
 //////////////////////////////////////////////////////////////////////
@@ -53,14 +52,22 @@ function createEnemy1(amount){
         };
         EnemyID++
         enemy.ID = EnemyID;
-        setPosition(enemy.element, 70, 70)
+        enemy.enemyX = path[0].tilex + 35;
+        enemy.enemyY = path[0].tiley + 105;
+        setPosition(enemy.element, enemy.enemyX, enemy.enemyY - 17.5)
         return enemy;
     }
     for (let i = 0; i < amount; i++) {
         enemy();
     }
 }
-createEnemy1(1)
+
+//////////////////////////////////////////////////////////////////////
+//////                 Tree Generation                          ////// 
+//////////////////////////////////////////////////////////////////////
+
+
+
 
 //////////////////////////////////////////////////////////////////////
 //////                 Grass Generation                         ////// 
@@ -123,7 +130,9 @@ function sandTile(amount) {
         tile.centerY = tile.tiley - 35;
         tile.ID = tileID;
         tileID += 1;
+        console.log("trying to push in path....")
         path.push(tile)
+        console.log("succesfull...")
         setPosition(tile.element, tile.tilex, tile.tiley)
         x += 70;
         addClickEvent(tile);
@@ -203,3 +212,4 @@ function generatePlayfield(mapID) {
 }
 
 generatePlayfield(selectedMap);
+createEnemy1(1)

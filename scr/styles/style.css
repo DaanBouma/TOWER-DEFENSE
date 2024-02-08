@@ -23,6 +23,9 @@ body, html {
 }
 .bee {
     width: 35px;
+    margin-left: -17.5px;
+    margin-bottom: -127.5px;
+    
     position: absolute;
     z-index: 2;
 }
