@@ -1,6 +1,9 @@
 body, html {
     padding: 0;
     background-color: rgb(26, 26, 26);
+    background-image: url(../assets/backgrounds/background.png);
+    overflow: hidden;
+    margin: 0;
 }
 .tile {
     width: 70px;
@@ -8,14 +11,23 @@ body, html {
     cursor: pointer;
     pointer-events:fill;
     z-index: 1;
+    user-select: none;
+}
+.path {
+    width: 139px;
+    position: absolute;
+    cursor: pointer;
+    pointer-events:fill;
+    z-index: 1;
+    user-select: none;
 }
 .game {
-    width: 910px;
-    height: 700px;
+    width: 1800px;
+    height: 1330px;
     position: absolute;
-    top: 50%;
+    top: 58%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(0.45);
 }
 #container {
     display: flex;
@@ -28,4 +40,42 @@ body, html {
     
     position: absolute;
     z-index: 2;
+}
+.object {
+    position: absolute;
+    cursor: pointer;
+    pointer-events:fill;
+    z-index: 3;
+    user-select: none;
+}
+.border {
+    position: absolute;
+    cursor: pointer;
+    pointer-events:fill;
+    z-index: 4;
+    user-select: none;
+}
+.blockzones {
+    opacity: 0;
+}
+.button {
+    width: 30px;
+    background-color: transparent;
+    border: none;
+    transition: 0.5s;
+}
+.button:hover {
+    transform: scale(1.1)
+}
+.button:active {
+    transform: scale(0.9)
+}
+#icons {
+    display: flex;
+    align-items: center;
+    width: 75px;
+    justify-content: space-evenly;
+    margin-top: 5px;
+    z-index: 100;
+    user-select: none;
 }
