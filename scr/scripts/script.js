@@ -31,7 +31,7 @@ function createEnemy1(amount) {
             enemyY: 0,
             ID: 0,
             Type: "Bee",
-            ArrayPassed: 0,
+            tilePassed: 0
         };
         EnemyID++
         enemy.ID = EnemyID;
@@ -44,14 +44,15 @@ function createEnemy1(amount) {
         enemy();
     }
 }
-
+// dus als je enemy typed select je de let enemy. als je nu . typed dan ga je erin en dan movingspeed
 ////////////////////////////////////////////////////////////////////
 
 let LT = Date.now();
 function update() {
-    const container = document.querySelector(".game");
+    const container = document.querySelector(".game"); // deze geven wij mee
     const CT = Date.now();
-    const DT = (CT - LT) / 1000;
+    const DT = (CT - LT) / 1000; // De DT geven wij ook mee aan de functie
+    updateEnemy(DT, container) // <- doordat er DT en container in de haakjes staan kunnen wij het meegeven in de functie
     LT = CT;
     window.requestAnimationFrame(update);
 }
@@ -350,3 +351,10 @@ function toggleFullscreen() {
     }
 }
 ////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
