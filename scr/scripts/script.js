@@ -45,18 +45,6 @@ function createEnemy1(amount) {
     }
 }
 // dus als je enemy typed select je de let enemy. als je nu . typed dan ga je erin en dan movingspeed
-////////////////////////////////////////////////////////////////////
-
-let LT = Date.now();
-function update() {
-    const container = document.querySelector(".game"); // deze geven wij mee
-    const CT = Date.now();
-    const DT = (CT - LT) / 1000; // De DT geven wij ook mee aan de functie
-    updateEnemy(DT, container) // <- doordat er DT en container in de haakjes staan kunnen wij het meegeven in de functie
-    LT = CT;
-    window.requestAnimationFrame(update);
-}
-window.requestAnimationFrame(update);
 
 ////////////////////////////////////////////////////////////////////
 
@@ -351,10 +339,92 @@ function toggleFullscreen() {
     }
 }
 ////////////////////////////////////////////////////////////////////
+ 
+let LT = Date.now();
+function update(){
+    const container = document.querySelector(".game")
+    const CT = Date.now();
+    const DT = (CT - LT) / 1000
+    updateEnemy(DT, container)
+    LT = CT
+    window.requestAnimationFrame(update);
+}
+window.requestAnimationFrame(update);
+
+function updateEnemy (DT, container) {
+    for (let i = 0; i < enemies; i++) {
+        const enemy = enemies[i];
+        const direction = calculateDirection(enemy);
+    }
+}
+
+function calculateDirection(enemy) {
+const direction = "";
+const lastTile = path [enemy.tilePassed]
+const nextTile = path [lastTile + 1]
+
+const lastTileX = lastTile.centerX
+const lastTileY = lastTile.centerY
+
+const nextTileX = nextTile.centerX
+const nextTileY = nextTile.centerY
+
+if (direction == "up"){
+    enemy.enemyY -= movingspeed * DT;
+}
+if (direction == "down"){
+    enemy.enemyY += movingspeed * DT;
+}
+if (direction == "left"){
+    enemy.enemyX -= movingspeed * DT;
+}
+if (direction == "right"){
+    enemy.enemyX += movingspeed * DT;
+}
 
 
+if (lastTileY < nextTileY){
+direction = "up"
+}
+if (lastTileY < nextTileY){
+direction = "down"
+}
 
+if (lastTileX < nextTileX){
+direction = "right"
+}
+if (lastTileX < nextTileX){
+direction ="left"
+}
+return direction;
 
+setPosition (enemy.element, enemy.enemyX, enemy.enemyY);
 
+}
 
+function updateLasttile(enemy){
+    const lastTile = path[enemy.tilePassed];
+    const nextTile = path[lastTile + 1];
+    const direction = calculateDirection (enemy);
 
+    if (direction == "up"){
+        if (enemy.enemyY <= nextTile.centerY){
+            enemy.tilePassed += 1;
+        }
+    }
+    if (direction == "down"){
+        if (enemy.enemyY >= nextTile.centerY){
+            enemy.tilePassed += 1;
+        }
+    }
+    if (direction == "left"){
+        if (enemy.enemyX <= nextTile.centerX){
+            enemy.tilePassed += 1;
+        }
+    }
+    if (direction == "right"){
+        if (enemy.enemyX >= nextTile.centerX){
+            enemy.tilePassed += 1;
+        }
+    }
+}
