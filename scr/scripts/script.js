@@ -6,57 +6,33 @@ let y = 0;
 
 const path = [];
 const enemies = [];
-
+let container_width = 0;
+let container_height = 0;
 ////////////////////////////////////////////////////////////////////
 
 function setPosition(pos, x, y) {
     pos.style.transform = 'translate(' + x + 'px , ' + y + 'px)';
 }
+////////////////////////////////////////////////////////////////////
+
+
+function mapAppear(){
+    const game = document.querySelector(".game");
+    setTimeout(function () {
+        game.style.opacity = "1";
+    }, 100);
+}
+
+mapAppear()
+
+
+
+
+
 
 ////////////////////////////////////////////////////////////////////
 
-let EnemyID = 0;
-function createEnemy1(amount) {
-    function enemy() {
-        const container = document.querySelector(".game");
-        const element = document.createElement("img");
-        element.src = "/scr/assets/enemy/bee.png";
-        element.className = "enemy bee";
-        element.draggable = false;
-        container.appendChild(element);
-        let enemy = {
-            movingspeed: 10,
-            element,
-            enemyX: 0,
-            enemyY: 0,
-            ID: 0,
-            Type: "Bee",
-            tilePassed: 0
-        };
-        EnemyID++
-        enemy.ID = EnemyID;
-        enemy.enemyX = path[0].tilex + 35;
-        enemy.enemyY = path[0].tiley + -35;
-        setPosition(enemy.element, enemy.enemyX, enemy.enemyY - 17.5)
-        return enemy;
-    }
-    for (let i = 0; i < amount; i++) {
-        enemy();
-    }
-}
-// dus als je enemy typed select je de let enemy. als je nu . typed dan ga je erin en dan movingspeed
-////////////////////////////////////////////////////////////////////
 
-let LT = Date.now();
-function update() {
-    const container = document.querySelector(".game"); // deze geven wij mee
-    const CT = Date.now();
-    const DT = (CT - LT) / 1000; // De DT geven wij ook mee aan de functie
-    updateEnemy(DT, container) // <- doordat er DT en container in de haakjes staan kunnen wij het meegeven in de functie
-    LT = CT;
-    window.requestAnimationFrame(update);
-}
-window.requestAnimationFrame(update);
 
 ////////////////////////////////////////////////////////////////////
 
@@ -82,6 +58,7 @@ function grassTile(amount) {
         tileID += 1;
         setPosition(tile.element, tile.tilex, tile.tiley)
         x += 69;
+        container_width += 70
         return tile;
     }
     for (let i = 0; i < amount; i++) {
@@ -90,8 +67,6 @@ function grassTile(amount) {
 
 }
 
-////////////////////////////////////////////////////////////////////
-//// Vertical_Path [1] /////  Left_Corner_Path [2] ///
 ////////////////////////////////////////////////////////////////////
 
 function sand_path(amount, typePath) {
@@ -141,13 +116,15 @@ function sand_path(amount, typePath) {
         };
         tile.tilex = x;
         tile.tiley = y;
-        tile.centerX = tile.tilex - 35;
-        tile.centerY = tile.tiley - 35;
+        tile.centerX = tile.tilex + 70;
+        tile.centerY = tile.tiley + 70;
         tile.ID = tileID;
         tileID += 1;
         path.push(tile)
         setPosition(tile.element, tile.tilex, tile.tiley)
         x += skip;
+        container_width += skip;
+        
         return tile;
     }
     for (let i = 0; i < amount; i++) {
@@ -256,6 +233,21 @@ function import_defaultmap_objects() {
 }
 ////////////////////////////////////////////////////////////////////
 
+function import_defaultmap2() {
+    return fetch('/scr/maps/map2/defaultmap.json')
+        .then(response => response.json())
+        .then(data => data)
+        .catch(error => console.error('Error:', error));
+}
+function import_defaultmap_objects2() {
+    return fetch('/scr/maps/map2/objects.json')
+        .then(response => response.json())
+        .then(data => data)
+        .catch(error => console.error('Error:', error));
+}
+
+////////////////////////////////////////////////////////////////////
+
 function generateTile(mapping) {
     for (let i = 0; i < mapping.length; i++) {
         for (let j = 0; j < mapping[i].length; j++) {
@@ -263,6 +255,7 @@ function generateTile(mapping) {
             if (mappingID == 99) {
                 x = 0;
                 y += 69;
+                container_height += 70
             } else if (mappingID == 0) {
                 grassTile(1);
             } else if (mappingID == 1) {
@@ -327,34 +320,58 @@ async function generatePlayfield(mapID) {
                 console.error('Error loading default map:', error);
             }
         } else if (selectedMap == "SandBox") {
-            const mapping = editmap1();
-            console.log(mapping);
-            generateTile(mapping);
+            try {
+                const mapping = await import_defaultmap2();
+                generateTile(mapping);
+                const mapping_objects = await import_defaultmap_objects2();
+                generateObjects(mapping_objects)
+            } catch (error) {
+                console.error('Error loading default map:', error);
+            }
         }
     }
 }
 
-generatePlayfield(selectedMap);
-
 ////////////////////////////////////////////////////////////////////
 
-const fullscreenButton = document.getElementById('makeBiggerButton');
-
-fullscreenButton.addEventListener('click', toggleFullscreen);
-function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
-            console.error('Fullscreen request failed:', err);
-        });
-    } else {
-        document.exitFullscreen();
+let EnemyID = 0;
+function createEnemy1(amount) {
+    function enemy() {
+        const container = document.querySelector(".game");
+        const element = document.createElement("img");
+        element.src = "/scr/assets/enemy/bee.png";
+        element.className = "enemy bee";
+        element.draggable = false;
+        container.appendChild(element);
+        let enemy = {
+            movingspeed: 10,
+            element,
+            enemyX: 0,
+            enemyY: 0,
+            ID: 0,
+            Type: "Bee",
+            tilePassed: 0
+        };
+        EnemyID++
+        enemy.ID = EnemyID;
+        const tile = path[0]
+        enemy.enemyX = tile.centerX
+        enemy.enemyY = tile.centerY - 140
+        setPosition(enemy.element, enemy.enemyX, enemy.enemyY - 17.5)
+        return enemy;
+    }
+    for (let i = 0; i < amount; i++) {
+        enemy();
     }
 }
+
 ////////////////////////////////////////////////////////////////////
 
+async function init() {
+    await generatePlayfield(selectedMap);
+    console.log(path);
+    console.log(path.length);
+    createEnemy1(1);
+}
 
-
-
-
-
-
+init();
