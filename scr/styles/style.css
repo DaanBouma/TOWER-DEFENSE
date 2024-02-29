@@ -24,10 +24,9 @@ body, html {
   
 
 .bee {
-    width: 35px;
-    margin-left: -17.5px;
-    margin-bottom: -127.5px;
-    
+    width: 70px;
+    margin-left: -35px;
+    margin-top: -35px;
     position: absolute;
     z-index: 2;
 }
